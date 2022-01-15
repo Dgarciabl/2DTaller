@@ -102,9 +102,14 @@ public class ArkanoidController : MonoBehaviour
     private void OnBlockDestroyed(int blockId)
     {
         BlockTile blockDestroyed = _gridController.GetBlockBy(blockId);
-        if (_gridController.GetBlocksActive() == 0)
+        if (blockDestroyed != null)
         {
             _totalScore += blockDestroyed.Score;
+            ArkanoidEvent.OnScoreUpdatedEvent?.Invoke(blockDestroyed.Score, _totalScore);
+        }
+
+        if (_gridController.GetBlocksActive() == 0)
+        {
             _currentLevel++;
             if (_currentLevel >= _levels.Count)
             {
@@ -113,6 +118,7 @@ public class ArkanoidController : MonoBehaviour
             }
             else
             {
+                ArkanoidEvent.OnLevelUpdatedEvent?.Invoke(_currentLevel);
                 SetInitialBall();
                 _gridController.BuildGrid(_levels[_currentLevel]);
             }

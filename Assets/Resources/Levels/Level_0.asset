@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea9f94ecef6883c4ebf1f92fb5b85d01, type: 3}
   m_Name: Level_0
   m_EditorClassIdentifier: 
-  RowCount: 7
+  RowCount: 1
   rowSpacing: 0.1
-  Rows: []
+  Rows:
+  - BlockAmount: 3
+    blockSpacing: 0.1
+    BlockType: 1
+    BlockColor: 0
