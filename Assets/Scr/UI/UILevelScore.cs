@@ -24,6 +24,7 @@ public class UILevelScore : MonoBehaviour
         ArkanoidEvent.OnLevelUpdatedEvent += OnLevelUpdated;
         ArkanoidEvent.OnGameStartEvent += OnGameStart;
         ArkanoidEvent.OnGameOverEvent += OnGameOver;
+        ArkanoidEvent.OnExitMenuEvent += OnExitMenu;
     }
 
     private void OnDestroy()
@@ -32,6 +33,7 @@ public class UILevelScore : MonoBehaviour
         ArkanoidEvent.OnLevelUpdatedEvent -= OnLevelUpdated;
         ArkanoidEvent.OnGameStartEvent -= OnGameStart;
         ArkanoidEvent.OnGameOverEvent -= OnGameOver;
+        ArkanoidEvent.OnExitMenuEvent -= OnExitMenu;
     }
 
     private void OnScoreUpdated(int score, int totalScore)
@@ -50,6 +52,11 @@ public class UILevelScore : MonoBehaviour
     }
 
     private void OnGameOver(int total)
+    {
+        _canvasGroup.alpha = 0;
+    }
+
+    private void OnExitMenu()
     {
         _canvasGroup.alpha = 0;
     }

@@ -13,6 +13,8 @@ public class ArkanoidController : MonoBehaviour
     private List<LevelData> _levels = new List<LevelData>();
 
     private int _totalScore = 0;
+    private bool _GO = false;
+    private bool game = true;
 
     private const string BALL_PREFAB_PATH = "Prefabs/Ball";
     private readonly Vector2 BALL_INIT_POSITION = new Vector2(0, -0.86f);
@@ -32,7 +34,28 @@ public class ArkanoidController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            InitGame();
+            if (game)
+            {
+                InitGame();
+            }
+            else
+            {
+                game = true;
+                if (_GO)
+                {
+                    ArkanoidEvent.OnVictoryMenuEvent?.Invoke();
+                }
+                else
+                {
+                    ArkanoidEvent.OnGameOverMenuEvent?.Invoke();
+                }
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ClearBalls();
+            _gridController.ClearGrid();
+            ArkanoidEvent.OnExitMenuEvent?.Invoke();
         }
     }
 
@@ -81,7 +104,6 @@ public class ArkanoidController : MonoBehaviour
         ball.Hide();
         _balls.Remove(ball);
         Destroy(ball.gameObject);
-
         CheckGameOver();
     }
 
@@ -92,6 +114,8 @@ public class ArkanoidController : MonoBehaviour
         {
             ClearBalls();
             _gridController.ClearGrid();
+            game = false;
+            _GO = false;
             ArkanoidEvent.OnGameOverEvent?.Invoke(_totalScore);
         }
     }
@@ -117,7 +141,9 @@ public class ArkanoidController : MonoBehaviour
             if (_currentLevel >= _levels.Count)
             {
                 ClearBalls();
-                Debug.LogError("Game Over: WIN!!!!");
+                game = false;
+                _GO = true;
+                ArkanoidEvent.OnVictoryEvent?.Invoke(_totalScore);
             }
             else
             {

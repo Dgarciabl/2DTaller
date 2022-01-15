@@ -15,13 +15,13 @@ public class UIGameOver : MonoBehaviour
         _canvasGroup = GetComponent<CanvasGroup>();
         _canvasGroup.alpha = 0;
         ArkanoidEvent.OnGameOverEvent += OnGameOver;
-        ArkanoidEvent.OnMainMenuEvent += OnMainMenu;
+        ArkanoidEvent.OnGameOverMenuEvent += OnMainMenu;
     }
 
     private void OnDestroy()
     {
         ArkanoidEvent.OnGameOverEvent -= OnGameOver;
-        ArkanoidEvent.OnMainMenuEvent -= OnMainMenu;
+        ArkanoidEvent.OnGameOverMenuEvent -= OnMainMenu;
     }
 
     private void OnGameOver(int FinalScore)

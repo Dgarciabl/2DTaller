@@ -14,17 +14,17 @@ public class UIVictory : MonoBehaviour
         _scoreText = transform.Find("FinalScoreText").GetComponent<TextMeshProUGUI>();
         _canvasGroup = GetComponent<CanvasGroup>();
         _canvasGroup.alpha = 0;
-        ArkanoidEvent.OnGameOverEvent += OnGameOver;
-        ArkanoidEvent.OnMainMenuEvent += OnMainMenu;
+        ArkanoidEvent.OnVictoryEvent += OnVictory;
+        ArkanoidEvent.OnVictoryMenuEvent += OnMainMenu;
     }
 
     private void OnDestroy()
     {
-        ArkanoidEvent.OnGameOverEvent -= OnGameOver;
-        ArkanoidEvent.OnMainMenuEvent -= OnMainMenu;
+        ArkanoidEvent.OnVictoryEvent -= OnVictory;
+        ArkanoidEvent.OnVictoryMenuEvent -= OnMainMenu;
     }
 
-    private void OnGameOver(int FinalScore)
+    private void OnVictory(int FinalScore)
     {
         _scoreText.text = string.Format(Final_SCORE_TEXT_TEMPLATE, FinalScore);
         _canvasGroup.alpha = 1;

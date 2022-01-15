@@ -22,6 +22,15 @@ public static class ArkanoidEvent
     public delegate void GameOverAction(int FinalScore);
     public static GameOverAction OnGameOverEvent;
 
-    public delegate void MainMenuAction();
-    public static MainMenuAction OnMainMenuEvent;
+    public delegate void VictoryAction(int FinalScore);
+    public static VictoryAction OnVictoryEvent;
+
+    public delegate void GameOverMenuAction();
+    public static GameOverMenuAction OnGameOverMenuEvent;
+
+    public delegate void VictoryMenuAction();
+    public static VictoryMenuAction OnVictoryMenuEvent;
+
+    public delegate void ExitMenuAction();
+    public static ExitMenuAction OnExitMenuEvent;
 }

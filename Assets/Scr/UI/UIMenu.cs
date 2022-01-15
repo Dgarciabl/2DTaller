@@ -11,13 +11,17 @@ public class UIMenu : MonoBehaviour
         _canvasGroup = GetComponent<CanvasGroup>();
         _canvasGroup.alpha = 1;
         ArkanoidEvent.OnGameStartEvent += OnGameStart;
-        ArkanoidEvent.OnMainMenuEvent += OnMainMenu;
+        ArkanoidEvent.OnGameOverMenuEvent += OnMainMenu;
+        ArkanoidEvent.OnVictoryMenuEvent += OnMainMenu;
+        ArkanoidEvent.OnExitMenuEvent += OnMainMenu;
     }
 
     private void OnDestroy()
     {
         ArkanoidEvent.OnGameStartEvent -= OnGameStart;
-        ArkanoidEvent.OnMainMenuEvent -= OnMainMenu;
+        ArkanoidEvent.OnGameOverMenuEvent -= OnMainMenu;
+        ArkanoidEvent.OnVictoryMenuEvent -= OnMainMenu;
+        ArkanoidEvent.OnExitMenuEvent -= OnMainMenu;
     }
 
     private void OnGameStart()
