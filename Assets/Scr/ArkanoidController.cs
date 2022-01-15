@@ -42,6 +42,9 @@ public class ArkanoidController : MonoBehaviour
         _totalScore = 0;
         _currentLevel = 0;
         _gridController.BuildGrid(_levels[0]);
+        ArkanoidEvent.OnGameStartEvent?.Invoke();
+        ArkanoidEvent.OnScoreUpdatedEvent?.Invoke(0, _totalScore);
+        ArkanoidEvent.OnLevelUpdatedEvent?.Invoke(_currentLevel);
         SetInitialBall();
     }
 
@@ -88,8 +91,8 @@ public class ArkanoidController : MonoBehaviour
         if (_balls.Count == 0)
         {
             ClearBalls();
-
-            Debug.Log("Game Over: LOSE!!!");
+            _gridController.ClearGrid();
+            ArkanoidEvent.OnGameOverEvent?.Invoke(_totalScore);
         }
     }
 

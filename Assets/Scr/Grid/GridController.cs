@@ -19,7 +19,7 @@ public class GridController : MonoBehaviour
         BuildGrid();
     }
 
-    private void ClearGrid()
+    public void ClearGrid()
     {
         int totalChildren = transform.childCount;
         for (int i = totalChildren - 1; i >= 0; i--)

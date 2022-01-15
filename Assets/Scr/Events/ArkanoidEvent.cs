@@ -15,4 +15,13 @@ public static class ArkanoidEvent
 
     public delegate void LevelUpdatedAction(int level);
     public static LevelUpdatedAction OnLevelUpdatedEvent;
+
+    public delegate void GameStartAction();
+    public static GameStartAction OnGameStartEvent;
+
+    public delegate void GameOverAction(int FinalScore);
+    public static GameOverAction OnGameOverEvent;
+
+    public delegate void MainMenuAction();
+    public static MainMenuAction OnMainMenuEvent;
 }
