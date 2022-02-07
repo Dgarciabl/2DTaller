@@ -23,13 +23,6 @@ public class Paddle : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
         _targetPosition.x = Camera.ScreenToWorldPoint(Input.mousePosition).x;
@@ -37,5 +30,17 @@ public class Paddle : MonoBehaviour
         _targetPosition.y = this.transform.position.y;
 
         transform.position = Vector3.Lerp(transform.position, _targetPosition, Time.deltaTime * _speed);
+    }
+
+    public void changeHorizontalScale(float scale)
+    {
+
+        gameObject.transform.localScale += new Vector3(scale, 0, 0);
+    }
+
+    public void resetHorizontalScale(float scale)
+    {
+
+        gameObject.transform.localScale = new Vector3(1, 1, 1);
     }
 }

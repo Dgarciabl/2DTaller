@@ -2,49 +2,58 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PowerType
+public enum PowerUpType
 {
-    plus50,
-    plus100,
-    plus250,
-    plus500,
+    multiball,
+    score50,
+    score100,
+    score250,
+    score500,
     slow,
     fast,
-    multi
+    paddlesmall,
+    paddlelarge,
 }
-
 public class PowerUp : MonoBehaviour
 {
-    private const string POWER_PATH = "Sprites/Power/Power_{0}";
+    // Start is called before the first frame update
+    private const string POWER_UP_PATH = "Sprites/PowerUp/pu_{0}";
+    private PowerUpType type;
+    private SpriteRenderer _renderer;
 
     [SerializeField]
-    private PowerType _power = PowerType.plus50;
-    private Vector3 direction = new Vector3(0, -1, 0);
-    private float speed = 0.5;
+    private float scale = 0.5f;
 
-    private SpriteRenderer _renderer;
-    private Collider2D _collider;
-    private Transform _body;
+    [SerializeField]
+    int _effectTime = 5;
+    [SerializeField]
+    float _velocityChange = 2;
+    [SerializeField]
+    float yVelocity = 0.5f;
 
-    public void SetData(PowerType power)
+    private void Start()
     {
-        _power = power;
+        Init();
     }
 
-    public void Init()
+    private void Update()
     {
-        _collider = GetComponent<Collider2D>();
-        _collider.enabled = false;
+        float yValue = Time.deltaTime * yVelocity;
+        transform.Translate(0, -yValue, 0);
+    }
+    private void Init()
+    {
         _renderer = GetComponentInChildren<SpriteRenderer>();
-        _renderer.sprite = GetPowerSprite(_power);
+        type = (PowerUpType)Random.Range(0, 9);
+        _renderer.sprite = GetPowerUpSprite();
+
     }
 
-
-    static Sprite GetPowerSprite(PowerType _power)
+    private Sprite GetPowerUpSprite()
     {
         string path = string.Empty;
-        path = string.Format(POWER_PATH, _power);
-
+        path = string.Format(POWER_UP_PATH, type);
+        Debug.Log(path);
         if (string.IsNullOrEmpty(path))
         {
             return null;
@@ -53,8 +62,92 @@ public class PowerUp : MonoBehaviour
         return Resources.Load<Sprite>(path);
     }
 
-    private void Update()
+    private void OnCollisionEnter2D(Collision2D other)
     {
-        _body.position.y = speed;
+        if (other.gameObject.tag == "Paddle")
+        {
+            Effect();
+            Destroy(gameObject);
+        }
+        else if (other.gameObject.tag != "Ball" && other.gameObject.tag != "Block")
+        {
+            Destroy(gameObject);
+        }
     }
+
+    private void Effect()
+    {
+        switch (type)
+        {
+            case PowerUpType.score50:
+                {
+                    Score(50);
+                    break;
+                }
+            case PowerUpType.score100:
+                {
+                    Score(100);
+                    break;
+                }
+            case PowerUpType.score250:
+                {
+                    Score(250);
+                    break;
+                }
+            case PowerUpType.score500:
+                {
+                    Score(500);
+                    break;
+                }
+            case PowerUpType.multiball:
+                {
+                    MultiBall();
+                    break;
+                }
+            case PowerUpType.slow:
+                {
+                    SlowBall();
+                    break;
+                }
+            case PowerUpType.fast:
+                {
+                    FastBall();
+                    break;
+                }
+            case PowerUpType.paddlelarge:
+                {
+                    ScalePaddle(scale);
+                    break;
+                }
+            case PowerUpType.paddlesmall:
+                {
+                    ScalePaddle(-scale);
+                    break;
+                }
+            default: break;
+        }
+    }
+
+    private void MultiBall()
+    {
+        ArkanoidEvent.OnPowerUpAddMoreBallsEvent?.Invoke();
+    }
+    private void Score(int score)
+    {
+        ArkanoidEvent.OnPowerUpScoreEvent?.Invoke(score);
+    }
+    private void SlowBall()
+    {
+        ArkanoidEvent.OnPowerUpChangeBallSpeedEvent?.Invoke(1 / _velocityChange, _effectTime);
+    }
+    private void FastBall()
+    {
+        ArkanoidEvent.OnPowerUpChangeBallSpeedEvent?.Invoke(_velocityChange, _effectTime);
+    }
+
+    private void ScalePaddle(float scale)
+    {
+        ArkanoidEvent.OnPowerUpChangeScalePaddleEvent?.Invoke(scale);
+    }
+
 }

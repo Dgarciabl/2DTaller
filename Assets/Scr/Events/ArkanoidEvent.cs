@@ -10,6 +10,7 @@ public static class ArkanoidEvent
     public delegate void BlockDestroyedAction(int blockID);
     public static BlockDestroyedAction OnBlockDestroyedEvent;
 
+    //UI Events
     public delegate void ScoreUpdatedAction(int score, int totalScore);
     public static ScoreUpdatedAction OnScoreUpdatedEvent;
 
@@ -33,4 +34,18 @@ public static class ArkanoidEvent
 
     public delegate void ExitMenuAction();
     public static ExitMenuAction OnExitMenuEvent;
+
+    //PowerUp Events
+    public delegate void PowerUpScoreAction(int score);
+    public static PowerUpScoreAction OnPowerUpScoreEvent;
+
+    public delegate void PowerUpChangeBallSpeed(float velocity, int seconds);
+    public static PowerUpChangeBallSpeed OnPowerUpChangeBallSpeedEvent;
+
+    public delegate void PowerUpChangeScalePaddle(float scale);
+    public static PowerUpChangeScalePaddle OnPowerUpChangeScalePaddleEvent;
+
+    public delegate void PowerUpAddMoreBalls();
+    public static PowerUpAddMoreBalls OnPowerUpAddMoreBallsEvent;
+
 }

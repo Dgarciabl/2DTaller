@@ -16,6 +16,10 @@ public class Ball : MonoBehaviour
     private Rigidbody2D _rb;
     private Collider2D _collider;
 
+    private bool activePowerUp;
+    private float maxTime;
+    private float velocityMultiplier;
+
     public void Init()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -33,6 +37,14 @@ public class Ball : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (activePowerUp)
+        {
+            if (Time.time > maxTime)
+            {
+                activePowerUp = false;
+                _rb.velocity = _rb.velocity / velocityMultiplier;
+            }
+        }
         CheckVelocity();
     }
 
@@ -40,12 +52,11 @@ public class Ball : MonoBehaviour
     {
         Vector2 velocity = _rb.velocity;
         float currentSpeed = velocity.magnitude;
-
-        if (currentSpeed < _minSpeed)
+        if (currentSpeed < _minSpeed && !activePowerUp)
         {
             velocity = velocity.normalized * _minSpeed;
         }
-        else if (currentSpeed > _maxSpeed)
+        else if (currentSpeed > _maxSpeed && !activePowerUp)
         {
             velocity = velocity.normalized * _maxSpeed;
         }
@@ -58,7 +69,6 @@ public class Ball : MonoBehaviour
         {
             velocity.y += Mathf.Sign(velocity.y) * BALL_VELOCITY_MIN_AXIS_VALUE * Time.deltaTime;
         }
-
         _rb.velocity = velocity;
     }
 
@@ -80,4 +90,11 @@ public class Ball : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    public void changeVelocity(float velocity, int seconds)
+    {
+        activePowerUp = true;
+        velocityMultiplier = velocity;
+        _rb.velocity = _rb.velocity * velocity;
+        maxTime = Time.time + seconds;
+    }
 }
