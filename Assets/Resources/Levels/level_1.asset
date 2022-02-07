@@ -22,7 +22,7 @@ MonoBehaviour:
   - BlockAmount: 7
     blockSpacing: 0.1
     BlockType: 1
-    BlockColor: 1
+    BlockColor: 0
   - BlockAmount: 7
     blockSpacing: 0.1
     BlockType: 1
