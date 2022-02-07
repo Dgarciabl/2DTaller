@@ -14,7 +14,9 @@ public class ArkanoidController : MonoBehaviour
 
     private const string BALL_PREFAB_PATH = "Prefabs/Ball";
     private const string POWERUP_PREFAB_PATH = "Prefabs/PowerUp";
+    private const string PADDLE_PREFAB_PATH = "Prefabs/Paddle";
     private readonly Vector2 BALL_INIT_POSITION = new Vector2(0, -0.86f);
+    private readonly Vector2 PADDLE_INIT_POSITION = new Vector2(0, -3.5f);
 
     private int _totalScore = 0;
     private bool _GO = false;
@@ -32,7 +34,7 @@ public class ArkanoidController : MonoBehaviour
     float maxTimeBalls = 2;
 
     [SerializeField]
-    private Paddle _paddle;
+    private Paddle _paddle = null;
 
     private void Start()
     {
@@ -65,12 +67,16 @@ public class ArkanoidController : MonoBehaviour
                 }
             }
         }
-        else if (Input.GetKeyDown(KeyCode.Escape))
+        
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             ClearBalls();
+            ClearPaddle();
+            ClearPower();
             _gridController.ClearGrid();
             ArkanoidEvent.OnExitMenuEvent?.Invoke();
         }
+
         if (_multipleballsPU)
         {
             if (Time.time > TimeBalls)
@@ -99,6 +105,7 @@ public class ArkanoidController : MonoBehaviour
         ArkanoidEvent.OnScoreUpdatedEvent?.Invoke(0, _totalScore);
         ArkanoidEvent.OnLevelUpdatedEvent?.Invoke(_currentLevel);
         SetInitialBall();
+        SetInitialPaddle();
     }
 
     private void SetInitialBall()
@@ -109,6 +116,13 @@ public class ArkanoidController : MonoBehaviour
         _balls.Add(ball);
     }
 
+    private void SetInitialPaddle()
+    {
+        ClearPaddle();
+        Paddle pad = CreatePaddleAt(PADDLE_INIT_POSITION);
+        _paddle = pad;
+    }
+
     private Ball CreateBallAt(Vector2 position)
     {
         if (_ballPrefab == null)
@@ -116,6 +130,15 @@ public class ArkanoidController : MonoBehaviour
             _ballPrefab = Resources.Load<Ball>(BALL_PREFAB_PATH);
         }
         return Instantiate(_ballPrefab, position, Quaternion.identity);
+    }
+
+    private Paddle CreatePaddleAt(Vector2 position)
+    {
+        if (_paddle == null)
+        {
+            _paddle = Resources.Load<Paddle>(PADDLE_PREFAB_PATH);
+        }
+        return Instantiate(_paddle, position, Quaternion.identity);
     }
 
     private void ClearBalls()
@@ -131,6 +154,32 @@ public class ArkanoidController : MonoBehaviour
         _balls.Clear();
     }
 
+    private void ClearPaddle()
+    {
+        if (!(_paddle == null))
+        {
+            _paddle.gameObject.SetActive(false);
+            Destroy(_paddle.gameObject);
+            Destroy(_paddle);
+            _paddle = null;
+        }
+    }
+
+    private void ClearPower()
+    {
+        for (int i = _powerups.Count - 1; i >= 0; i--)
+        {
+            PowerUp destroyPowerUp = _powerups[i];
+            if (!(destroyPowerUp == null))
+            {
+                destroyPowerUp.gameObject.SetActive(false);
+                Destroy(destroyPowerUp.gameObject);
+                Destroy(destroyPowerUp);
+            }
+        }
+        _powerups.Clear();
+    }
+
     private void OnBallReachDeadZone(Ball ball)
     {
         ball.Hide();
@@ -144,6 +193,8 @@ public class ArkanoidController : MonoBehaviour
         //Game over
         if (_balls.Count == 0)
         {
+            ClearPower();
+            ClearPaddle();
             ClearBalls();
             _gridController.ClearGrid();
             game = false;
@@ -181,6 +232,7 @@ public class ArkanoidController : MonoBehaviour
             _currentLevel++;
             if (_currentLevel >= _levels.Count)
             {
+                ClearPower();
                 ClearBalls();
                 game = false;
                 _GO = true;
@@ -188,6 +240,7 @@ public class ArkanoidController : MonoBehaviour
             }
             else
             {
+                ClearPower();
                 ArkanoidEvent.OnLevelUpdatedEvent?.Invoke(_currentLevel);
                 SetInitialBall();
                 _gridController.BuildGrid(_levels[_currentLevel]);
@@ -239,4 +292,8 @@ public class ArkanoidController : MonoBehaviour
         ArkanoidEvent.OnScoreUpdatedEvent?.Invoke(score, _totalScore);
     }
 
+    public Paddle GetPaddle()
+    {
+        return _paddle;
+    }
 }

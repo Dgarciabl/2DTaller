@@ -31,6 +31,9 @@ public class PowerUp : MonoBehaviour
     [SerializeField]
     float yVelocity = 0.5f;
 
+    [SerializeField]
+    private Paddle _paddle;
+
     private void Start()
     {
         Init();
@@ -38,8 +41,7 @@ public class PowerUp : MonoBehaviour
 
     private void Update()
     {
-        float yValue = Time.deltaTime * yVelocity;
-        transform.Translate(0, -yValue, 0);
+
     }
     private void Init()
     {
@@ -53,7 +55,6 @@ public class PowerUp : MonoBehaviour
     {
         string path = string.Empty;
         path = string.Format(POWER_UP_PATH, type);
-        Debug.Log(path);
         if (string.IsNullOrEmpty(path))
         {
             return null;
@@ -62,14 +63,14 @@ public class PowerUp : MonoBehaviour
         return Resources.Load<Sprite>(path);
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnCollisionEnter2D(Collision2D obj)
     {
-        if (other.gameObject.tag == "Paddle")
+        if (obj.gameObject.tag == "Paddle")
         {
             Effect();
             Destroy(gameObject);
         }
-        else if (other.gameObject.tag != "Ball" && other.gameObject.tag != "Block")
+        if (obj.gameObject.tag == "Bottom")
         {
             Destroy(gameObject);
         }
